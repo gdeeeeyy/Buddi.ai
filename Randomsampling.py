@@ -26,3 +26,4 @@ print(draw_samples(pmf, 4))
 #     feature=input("Enter the feature: ")
 #     value=float(input("Enter the pmf of the feature as a floating point value: "))
 #     pmf[feature]=value
+# no_of_samples=int(input("\nEnter the length of the random samples that we draw from the pmf dictionary"))
