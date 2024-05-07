@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import math
 
 darts = [0, 10, 100, 1000, 10000, 100000, 1000000, 10000000]
