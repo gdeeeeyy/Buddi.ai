@@ -50,8 +50,3 @@ def same_std(s):
 
 same_mean(0)
 same_std(1)
-
-
-
-#smds
-#dmss
