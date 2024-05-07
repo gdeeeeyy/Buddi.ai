@@ -1,32 +1,21 @@
 import numpy as np
 
-def random_sampler(pmf, no_of_samples):
-    sum=0
-    cmf=[]
+def draw_samples(pmf, no_of_samples):
+    s=0
+    cmf={}
     samples=[]
-    for i in range(len(pmf)):
-        sum+=pmf[i]
-        cmf.append(sum)
-    n=len(cmf)
+    for (k,v) in pmf.items():
+        s+=v
+        cmf[k]=s
     for _ in range(no_of_samples):
         r=np.random.uniform(0,1)
-        for i in range(n):
-            if(r>cmf[i]):
-                samples.append(i)
-                break
+        flag=0
+        print(r)
+        for k in cmf:
+            if(r<cmf[k] and not flag):
+                samples.append(k)
+                flag=1
     return samples
 
-distribution={"ABCD":1,"EFGH":2,"IJKL":4,"MNOP":6,"QRST":11,"UVWXYZ":3}
-data_pts=list(distribution.values())
-check_arr=[]
-no_of_samples=4
-pmf=[data_pts[i]/sum(data_pts) for i in range(len(data_pts))]
-samples=random_sampler(pmf, no_of_samples)
-print(f"The samples returned from random sampling is {samples}")
-
-# for i in range(len(data_pts)):
-#     print(f"no of samples from feature {i+1} is {samples.count(i)}")
-
-
-#drawsample(dict pmf(float), n_int)-> list(str)
-#add comments
+pmf={"ABCD":0.03703704,"EFGH":0.07407407,"IJKL":0.14814815,"MNOP":0.22222222,"QRST":0.40740741, "UVWXYZ":0.11111111}
+print(draw_samples(pmf, 4))
