@@ -1,24 +1,26 @@
 import numpy as np
 
-def draw_samples(pmf, no_of_samples):
+def drawSamples(pmf:dict[str, float], n:int)->list[str]:
     s=0
-    cmf={}
+    g=list(pmf.items())
     samples=[]
-    for (k,v) in pmf.items():
-        s+=v
-        cmf[k]=s
-    for _ in range(no_of_samples):
+    k=list(pmf.keys())
+    for i in range(len(g)):
+        s+=g[i][1]
+        g[i]=tuple(list(g[i])+[s])
+    for _ in range(n):
         r=np.random.uniform(0,1)
         flag=0
-        print(r)
-        for k in cmf:
-            if(r<cmf[k] and not flag):
-                samples.append(k)
+        for i in range(len(g)):
+            if(r<g[i][2] and not flag):
+                samples.append(g[i][0])
                 flag=1
     return samples
 
 pmf={"ABCD":0.03703704,"EFGH":0.07407407,"IJKL":0.14814815,"MNOP":0.22222222,"QRST":0.40740741, "UVWXYZ":0.11111111}
-print(draw_samples(pmf, 4))
+print(drawSamples(pmf, 4))
+# dtup=list(pmf.items())
+# print(dtup[1][1])
 
 # pmf={}
 # n=int(input("Enter the number of feature labels: "))
