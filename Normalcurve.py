@@ -26,6 +26,8 @@ def same_mean(m):
     plt.legend()
     plt.title("Normal curve with same mean and different standard deviation")
     plt.figtext(0.5, 0.01, txt1, wrap=True, horizontalalignment='center', fontsize=8)
+    plt.xlabel("Feature values")
+    plt.ylabel("Feature Density")
     plt.show()
     plt.close()
 
@@ -45,8 +47,11 @@ def same_std(s):
     plt.plot(xsm3, ysm3, label=f"Normal curve with μ={m3} and δ={s}")
     plt.figtext(0.5, 0.01, txt2, wrap=True, horizontalalignment='center', fontsize=8)
     plt.legend()
+    plt.xlabel("Feature values")
+    plt.ylabel("Feature Density")
     plt.title("Normal curve with different mean and same standard deviation")
     plt.show()
+    
+same_mean(m=0)
+same_std(s=1)
 
-same_mean(0)
-same_std(1)
