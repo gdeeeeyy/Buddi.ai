@@ -30,3 +30,17 @@ The random values, (i.e) the random points that the darts land on the unit squar
 ## Random Sampler
 
 This program is used to construct a random sampler using a distribution with varying Probability mass functions, this may make the random sampling more weighted for a given feature, but we can calculate the cummulative mass function for each of the features to make the sampling more random and not weighted.
+
+## Normal curve
+
+A gaussian is plotted for the given normal function, two graphs are plotted where one has 3 different plots with the same mean and different standard
+deviations and the other one also has 3 different plots with same standard deviations and different means, and we can visually notice the difference
+between the normal curves.
+
+## Lagrange's Polynomial
+
+The Lagrange's polynomial is used to estimate the given points perfectly, i.e it creates a function so that all the given data points are covered in the graph. Note: Lagrange's polynomial can't be used to create a model that can be deployed as it doesn't work well on unseen data.
+
+## Bias Variance Trade Off
+
+The bias variance trade off graph represents the relationship of the training error i,e the bias and the testing error i,e the variance with the complexity of the model(the degree of the model). We can see that after some point, eventhough the bias is decreasing, the variance increases with increasing complexity of the model
