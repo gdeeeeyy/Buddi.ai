@@ -22,27 +22,18 @@ X4_train=np.array(X1_train**4)
 Y_train=np.array(Y[:split_idx_train])
 
 
-X1_valid=np.array(X[split_idx_train:split_idx_valid])
+X1_valid=np.array(X[split_idx_train:])
 X0_valid=np.array([X1_valid**0])
 X2_valid=np.array([X1_valid**2])
 X3_valid=np.array([X1_valid**3])
 X4_valid=np.array([X1_valid**4])
-Y_valid=np.array([Y[split_idx_train:split_idx_valid]])
-
-
-X1_test=np.array(X[split_idx_valid:])
-X0_test=np.array([X1_test**0])
-X2_test=np.array([X1_test**2])
-X3_test=np.array([X1_test**3])
-X4_test=np.array([X1_test**4])
-Y_test=np.array(Y[split_idx_valid:])
-
+Y_valid=np.array([Y[split_idx_train:]])
 
 Xtrans=np.array([X0_train, X1_train, X2_train, X3_train, X4_train])
 X_y=np.transpose(Xtrans)
 XInv=np.linalg.inv(np.matmul(Xtrans, X_y))
 calc1=np.matmul(XInv, Xtrans)
-beta=calc1=np.matmul(calc1, Y_train)
+beta=np.matmul(calc1, Y_train)
 
 def linearModel(X1:list[float], beta:list[float])->list[float]:
     return beta[0]+(beta[1]*X1)
@@ -107,12 +98,12 @@ def train(X1_train:list[float], X2_train:list[float], X3_train:list[float], X4_t
     quart_model_train=quarternaryModel(X1_train, X2_train, X3_train, X4_train, beta)
     lagranges_model_train=[lagrangesPolynomial(X1_train,Y_train,X1_train[i],len(X1_train)) for i in range(len(X1_train))]
 
-    eps_linear_model_train=np.sum(np.abs(Y_train-lin_model_train))/len(X1_train)
-    eps_quad_model_train=np.sum(np.abs(Y_train-quad_model_train))/len(X1_train)
-    eps_cub_model_train=np.sum(np.abs(Y_train-cub_model_train))/len(X1_train)
-    eps_quart_model_train=np.sum(np.abs(Y_train-quart_model_train))/len(X1_train)
-    eps_lag_model_train=np.sum(np.abs(Y_train-lagranges_model_train))/len(X1_train)
-    op=[eps_linear_model_train, eps_quad_model_train, eps_cub_model_train, eps_quart_model_train, eps_lag_model_train]
+    eps_lin_train = np.sum(np.abs(Y_train - lin_model_train) / len(X1_train))
+    eps_quad_train = np.sum(np.abs(Y_train - quad_model_train) / len(X1_train))
+    eps_cube_train = np.sum(np.abs(Y_train - cub_model_train) / len(X1_train))
+    eps_quart_train = np.sum(np.abs(Y_train - quart_model_train) / len(X1_train))
+    eps_lag_train = np.sum(np.abs(Y_train - lagranges_model_train) / len(X1_train))
+    op=[eps_lin_train, eps_quad_train, eps_cube_train, eps_quart_train, eps_lag_train]
     return op
 
 eps_bias=train(X1_train, X2_train, X3_train, X4_train, beta)
@@ -124,13 +115,13 @@ def valid(X1_valid:list[float], X2_valid:list[float], X3_valid:list[float], X4_v
     quart_model_valid=quarternaryModel(X1_valid, X2_valid, X3_valid, X4_valid, beta)
     # lagranges_model_valid=[lagrangesPolynomial(X1_valid,Y_valid,X1_valid[i],70) for i in range(len(X1_train))]
 
-    eps_linear_model_valid=np.sum(np.abs(Y_valid-lin_model_valid))/len(X1_valid)
-    eps_quad_model_valid=np.sum(np.abs(Y_valid-quad_model_valid))/len(X1_valid)
-    eps_cub_model_valid=np.sum(np.abs(Y_valid-cub_model_valid))/len(X1_valid)
-    eps_quart_model_valid=np.sum(np.abs(Y_valid-quart_model_valid))/len(X1_valid)
-    eps=[eps_linear_model_valid, eps_quad_model_valid, eps_cub_model_valid, eps_quart_model_valid]
+    eps_lin_valid = np.sum(np.abs(Y_valid - lin_model_valid) / len(X1_valid))
+    eps_quad_valid = np.sum(np.abs(Y_valid - quad_model_valid) / len(X1_valid))
+    eps_cube_valid = np.sum(np.abs(Y_valid - cub_model_valid) / len(X1_valid))
+    eps_quart_valid = np.sum(np.abs(Y_valid - quart_model_valid) / len(X1_valid))
+    eps=[eps_lin_valid, eps_quad_valid, eps_cube_valid, eps_quart_valid]
     # eps_lag_model_valid=np.sum(np.abs(Y_valid-lagranges_model_valid))
-    return [eps_linear_model_valid, eps_quad_model_valid, eps_cub_model_valid, eps_quart_model_valid] #eps_lag_model_valid
+    return eps #eps_lag_model_valid
 
 eps_variance=valid(X1_valid, X2_valid, X3_valid, X4_valid, beta)
 
