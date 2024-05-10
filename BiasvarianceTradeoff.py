@@ -21,7 +21,7 @@ XYtup=[]
 for i in range(len(X_init)): 
     #creating a list of tuples => [(X,Y)]
     XYtup.append(tuple([X_init[i], Y_init[i]]))
-#shuffles the list of tuples in place
+#inplace shuffling of the tuples
 np.random.shuffle(XYtup)
 
 #getting the training feature values and output
