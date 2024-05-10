@@ -12,34 +12,6 @@ def populationGenerator(x:int)->int:
     #returns the output value for the given feature value 
     return y
 
-#an array is generated with 100 points between -5 and 5
-X_init=np.array(np.linspace(-5,5,100))
-#the population is generated using the populationGenerator function for the whole input feature array X and returns an array of the population
-Y_init=[populationGenerator(X_init[i]) for i in range(len(X_init))]
-
-XYtup=[]
-for i in range(len(X_init)): 
-    #creating a list of tuples => [(X,Y)]
-    XYtup.append(tuple([X_init[i], Y_init[i]]))
-#inplace shuffling of the tuples
-np.random.shuffle(XYtup)
-
-#getting the training feature values and output
-X=np.array([XYtup[i][0] for i in range(len(X_init))])
-Y=np.array([XYtup[i][1] for i in range(len(X_init))])
-
-#The index for the first 80-20 split is computed
-split_idx=int(X.shape[0]*0.8)
-
-#A random sample is extracted off the XYtup, which is a list of tuples of the size of split_idx
-train_data = random.sample(XYtup, split_idx)
-#The data which is not in train_data but is in XYtup is utilized as the test data
-test_data = [i for i in XYtup if i not in train_data]
-#The X_test and Y_test value is extracted from the list of tuples test_data
-X_test, Y_test = zip(*test_data)
-#The X_test and Y_test value is extracted from the list of tuples test_data
-X_train, Y_train = zip(*train_data) 
-
 def coeff(X:list[float], Y:list[float], n:int)->int:
     Xtrans=[]#This array will contain the values of the X^t array
     for i in range(n+1):
@@ -74,27 +46,9 @@ def lagrangesPolynomial(X:list[float], Y:list[float], xi:int, n:int)->int:
     #to return the output value of xi
     return res
 
-Y_train_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_train[i], len(X_train)) for i in range(len(X_train))])
-Y_test_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_test[i], len(X_test)) for i in range(len(X_test))])
-
-
-#generating the X values for plotting
-xplot = np.linspace(-5, 5, 10000)
-#the maximum degree for the polynomial to be used is initialized
-deg=4
-#This array contains the coefficients for each of i degree polynomial where i=[0, n]
-coeffarr=[coeff(X_train, Y_train, i) for i in range(deg+1)]
-
-#an array of the y_pred for each model is stored in an array of array of floats 
-models = np.array([sum(coeffarr[i][j] * (xplot**j) for j in range(len(coeffarr[i]))) for i in range(deg+1)])
-
 def meanSquaredError(y:int, y_pred:int)->int:
     #Here we calculate the mean square error with the formula sum((y-y_pred)**2)/size(y)
     return sum((y-y_pred)**2)/len(y)
-
-#The bias and variance of the Lagrange's polynomial is computed
-yBiasLag=meanSquaredError(Y_train, Y_train_lag)
-yVarianceLag=meanSquaredError(Y_test, Y_test_lag)
 
 def biasVarTradeoff(X_train:list[float], X_test:list[float], Y_train:list[float], Y_test:list[float], deg:int, coeffarr:list[list[float]])->tuple[list[float]]:
     bias=[]#bias array is initialized
@@ -114,38 +68,89 @@ def biasVarTradeoff(X_train:list[float], X_test:list[float], Y_train:list[float]
         variance.append(yVar)
     return bias, variance
 
-#The function biasVarTradeoff is called to return the bias and variance array for the given training and testing dataset
-bias, variance=biasVarTradeoff(X_train, X_test, Y_train, Y_test, deg, coeffarr)
 
-#the bias and variance of all the n models and the lagrange's model is printed
-print(f"The bias(training error) of all the {deg} models: {bias}")
-print(f"The variance(testing error) of all the {deg} models: {variance}")
-print(f"The bias(training error) of the Lagrange's model: {yBiasLag}, the variance(testing error) of the Lagrange's model: {yVarianceLag}")#(use math.floor to approximate the small bias value for lagrange's)
-# bias+=yBiasLag
-# variance+=yVarianceLag\
+def main():
+    #an array is generated with 100 points between -5 and 5
+    X_init=np.array(np.linspace(-5,5,100))
+    #the population is generated using the populationGenerator function for the whole input feature array X and returns an array of the population
+    Y_init=[populationGenerator(X_init[i]) for i in range(len(X_init))]
 
-n=len(models)
-txt=f"Plot that shows the performance of all the {n-1} polynomial models for the given feature input values and outputs values."
-for i in range(1, deg+1):
-    #This plots the curve for each of the calculated models in the given graph
-    plt.plot(xplot, models[i], label=f"{i} degree model")
-#Here we plot the original data onto the graph 
-plt.scatter(X_train, Y_train, label="Original Data Points", marker=".")
-plt.title(f"Perform of the {n-1} models for given features")
-plt.xlabel("Feature values")
-plt.ylabel("Output values")
-plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=8)# plot description
-plt.legend()
-plt.show()
+    XYtup=[]
+    for i in range(len(X_init)): 
+        #creating a list of tuples => [(X,Y)]
+        XYtup.append(tuple([X_init[i], Y_init[i]]))
+    #inplace shuffling of the tuples
+    np.random.shuffle(XYtup)
 
-#The bias is plotted with respect to the degree of the models in the x axis 
-plt.plot(range(deg+1), bias, c="r", label="Bias-Training error", marker=".")
-#The variance is plotted in the same graph with respect to the degree of the models in the x axis 
-plt.plot(range(deg+1), variance, c="b", label="Variance-Testing error", marker=".")
-plt.legend()
-plt.title('Bias and Variance Tradeoff') 
-plt.xlabel('Model Complexity') 
-plt.ylabel('Error') 
-plt.figtext(0.5, 0.01, "Here, the bias is decreasing as the model degree increases while the variance increases", wrap=True, horizontalalignment='center', fontsize=12) # plot description
-plt.show()
+    #getting the training feature values and output
+    X=np.array([XYtup[i][0] for i in range(len(X_init))])
+    Y=np.array([XYtup[i][1] for i in range(len(X_init))])
 
+    #The index for the first 80-20 split is computed
+    split_idx=int(X.shape[0]*0.8)
+
+    #A random sample is extracted off the XYtup, which is a list of tuples of the size of split_idx
+    train_data = random.sample(XYtup, split_idx)
+    #The data which is not in train_data but is in XYtup is utilized as the test data
+    test_data = [i for i in XYtup if i not in train_data]
+    #The X_test and Y_test value is extracted from the list of tuples test_data
+    X_test, Y_test = zip(*test_data)
+    #The X_test and Y_test value is extracted from the list of tuples test_data
+    X_train, Y_train = zip(*train_data) 
+
+    Y_train_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_train[i], len(X_train)) for i in range(len(X_train))])
+    Y_test_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_test[i], len(X_test)) for i in range(len(X_test))])
+
+
+    #generating the X values for plotting
+    xplot = np.linspace(-5, 5, 10000)
+    #the maximum degree for the polynomial to be used is initialized
+    deg=4
+    #This array contains the coefficients for each of i degree polynomial where i=[0, n]
+    coeffarr=[coeff(X_train, Y_train, i) for i in range(deg+1)]
+
+    #an array of the y_pred for each model is stored in an array of array of floats 
+    models = np.array([sum(coeffarr[i][j] * (xplot**j) for j in range(len(coeffarr[i]))) for i in range(deg+1)])
+
+    #The bias and variance of the Lagrange's polynomial is computed
+    yBiasLag=meanSquaredError(Y_train, Y_train_lag)
+    yVarianceLag=meanSquaredError(Y_test, Y_test_lag)
+
+
+    #The function biasVarTradeoff is called to return the bias and variance array for the given training and testing dataset
+    bias, variance=biasVarTradeoff(X_train, X_test, Y_train, Y_test, deg, coeffarr)
+
+    #the bias and variance of all the n models and the lagrange's model is printed
+    print(f"The bias(training error) of all the {deg} models: {bias}")
+    print(f"The variance(testing error) of all the {deg} models: {variance}")
+    print(f"The bias(training error) of the Lagrange's model: {yBiasLag}, the variance(testing error) of the Lagrange's model: {yVarianceLag}")#(use math.floor to approximate the small bias value for lagrange's)
+    # bias+=yBiasLag
+    # variance+=yVarianceLag\
+
+    n=len(models)
+    txt=f"Plot that shows the performance of all the {n-1} polynomial models for the given feature input values and outputs values."
+    for i in range(1, deg+1):
+        #This plots the curve for each of the calculated models in the given graph
+        plt.plot(xplot, models[i], label=f"{i} degree model")
+    #Here we plot the original data onto the graph 
+    plt.scatter(X_train, Y_train, label="Original Data Points", marker=".")
+    plt.title(f"Perform of the {n-1} models for given features")
+    plt.xlabel("Feature values")
+    plt.ylabel("Output values")
+    plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=8)# plot description
+    plt.legend()
+    plt.show()
+
+    #The bias is plotted with respect to the degree of the models in the x axis 
+    plt.plot(range(deg+1), bias, c="r", label="Bias-Training error", marker=".")
+    #The variance is plotted in the same graph with respect to the degree of the models in the x axis 
+    plt.plot(range(deg+1), variance, c="b", label="Variance-Testing error", marker=".")
+    plt.legend()
+    plt.title('Bias and Variance Tradeoff') 
+    plt.xlabel('Model Complexity') 
+    plt.ylabel('Error') 
+    plt.figtext(0.5, 0.01, "Here, the bias is decreasing as the model degree increases while the variance increases", wrap=True, horizontalalignment='center', fontsize=12) # plot description
+    plt.show()
+
+if __name__=="__main__":
+    main()
