@@ -44,3 +44,7 @@ The Lagrange's polynomial is used to estimate the given points perfectly, i.e it
 ## Bias Variance Trade Off
 
 The bias variance trade off graph represents the relationship of the training error i,e the bias and the testing error i,e the variance with the complexity of the model(the degree of the model). We can see that after some point, eventhough the bias is decreasing, the variance increases with increasing complexity of the model
+
+## Gradient Descent
+
+The gradient descent algorithm is applied for the 1000 feature values between -5, 5, we find the closed form solution for the given population generator function, the gradient descent algorithm is used to find the optimal value of b0 and b1, where the mean squared error is 10^-6. Finally the difference between the output from the closed form solution and the output from the gradient descent algorithm
