@@ -34,7 +34,7 @@ split_idx=int(X.shape[0]*0.8)
 #A random sample is extracted off the XYtup, which is a list of tuples of the size of split_idx
 train_data = random.sample(XYtup, split_idx)
 #The data which is not in train_data but is in XYtup is utilized as the test data
-test_data = [item for item in XYtup if item not in train_data]
+test_data = [i for i in XYtup if i not in train_data]
 #The X_test and Y_test value is extracted from the list of tuples test_data
 X_test, Y_test = zip(*test_data)
 #The X_test and Y_test value is extracted from the list of tuples test_data
@@ -128,7 +128,7 @@ n=len(models)
 txt=f"Plot that shows the performance of all the {n-1} polynomial models for the given feature input values and outputs values."
 for i in range(1, deg+1):
     #This plots the curve for each of the calculated models in the given graph
-    plt.plot(xplot, models[i], label=f"degree:{i} model")
+    plt.plot(xplot, models[i], label=f"{i} degree model")
 #Here we plot the original data onto the graph 
 plt.scatter(X_train, Y_train, label="Original Data Points", marker=".")
 plt.title(f"Perform of the {n-1} models for given features")
