@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+#import math
 
 #a function that generates the output value for the given data point
 def populationGenerator(x:int)->int:
@@ -58,35 +59,42 @@ def coeff(X:list[float], Y:list[float], n:int)->int:
     beta=np.matmul(Xinv, XtY)
     return beta
 
+#The function to calculate the lagrange's polynomial for the given input and output data is initialized
+def lagrangesPolynomial(X:list[float], Y:list[float], xi:int, n:int)->int:
+    res=0.0
+    for i in range(n):
+        #Here t is set to the ith value of Y
+        t=Y[i]
+        for j in range(n):
+            if(j!=i):
+                #if i!=j, we compute yi*((x-x1)...(x-xj)/(xi-xj))
+                t=t*(xi-X[j])/(X[i]-X[j])
+        #This accumulates the value of t for all values of i and j
+        res+=t
+    #to return the output value of xi
+    return res
+
+Y_train_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_train[i], len(X_train)) for i in range(len(X_train))])
+Y_test_lag=np.array([lagrangesPolynomial(X_train, Y_train, X_test[i], len(X_test)) for i in range(len(X_test))])
+
+
 #generating the X values for plotting
 xplot = np.linspace(-5, 5, 10000)
 #the maximum degree for the polynomial to be used is initialized
-deg=10
+deg=4
 #This array contains the coefficients for each of i degree polynomial where i=[0, n]
 coeffarr=[coeff(X_train, Y_train, i) for i in range(deg+1)]
 
 #an array of the y_pred for each model is stored in an array of array of floats 
-
 models = np.array([sum(coeffarr[i][j] * (xplot**j) for j in range(len(coeffarr[i]))) for i in range(deg+1)])
-
-n=len(models)
-txt=f"Plot that shows the performance of all the {n-1} polynomial models for the given feature input values and outputs values."
-for i in range(1, deg+1):
-    #This plots the curve for each of the calculated models in the given graph
-    plt.plot(xplot, models[i], label=f"degree:{i} model")
-#Here we plot the original data onto the graph 
-plt.scatter(X_train, Y_train, label="Original Data Points", marker=".")
-plt.title(f"Perform of the {n-1} models for given features")
-plt.xlabel("Feature values")
-plt.ylabel("Output values")
-plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=8)# plot description
-plt.legend()
-plt.show()
 
 def meanSquaredError(y:int, y_pred:int)->int:
     #Here we calculate the mean square error with the formula sum((y-y_pred)**2)/size(y)
     return sum((y-y_pred)**2)/len(y)
 
+#The bias and variance of the Lagrange's polynomial is computed
+yBiasLag=meanSquaredError(Y_train, Y_train_lag)
+yVarianceLag=meanSquaredError(Y_test, Y_test_lag)
 
 def biasVarTradeoff(X_train:list[float], X_test:list[float], Y_train:list[float], Y_test:list[float], deg:int, coeffarr:list[list[float]])->tuple[list[float]]:
     bias=[]#bias array is initialized
@@ -109,10 +117,31 @@ def biasVarTradeoff(X_train:list[float], X_test:list[float], Y_train:list[float]
 #The function biasVarTradeoff is called to return the bias and variance array for the given training and testing dataset
 bias, variance=biasVarTradeoff(X_train, X_test, Y_train, Y_test, deg, coeffarr)
 
+#the bias and variance of all the n models and the lagrange's model is printed
+print(f"The bias(training error) of all the {deg} models: {bias}")
+print(f"The variance(testing error) of all the {deg} models: {variance}")
+print(f"The bias(training error) of the Lagrange's model: {yBiasLag}, the variance(testing error) of the Lagrange's model: {yVarianceLag}")#(use math.floor to approximate the small bias value for lagrange's)
+# bias+=yBiasLag
+# variance+=yVarianceLag\
+
+n=len(models)
+txt=f"Plot that shows the performance of all the {n-1} polynomial models for the given feature input values and outputs values."
+for i in range(1, deg+1):
+    #This plots the curve for each of the calculated models in the given graph
+    plt.plot(xplot, models[i], label=f"degree:{i} model")
+#Here we plot the original data onto the graph 
+plt.scatter(X_train, Y_train, label="Original Data Points", marker=".")
+plt.title(f"Perform of the {n-1} models for given features")
+plt.xlabel("Feature values")
+plt.ylabel("Output values")
+plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=8)# plot description
+plt.legend()
+plt.show()
+
 #The bias is plotted with respect to the degree of the models in the x axis 
-plt.plot(range(0, deg+1), bias, c="r", label="Bias-Training error")
+plt.plot(range(deg+1), bias, c="r", label="Bias-Training error", marker=".")
 #The variance is plotted in the same graph with respect to the degree of the models in the x axis 
-plt.plot(range(0, deg+1), variance, c="b", label="Variance-Testing error")
+plt.plot(range(deg+1), variance, c="b", label="Variance-Testing error", marker=".")
 plt.legend()
 plt.title('Bias and Variance Tradeoff') 
 plt.xlabel('Model Complexity') 
