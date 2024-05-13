@@ -15,7 +15,7 @@ def meanSquaredError(y:float, y_pred:float)->float:
     return np.mean((y-y_pred)**2)
 
 
-def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[float], learning_rate:int)->list[list[float]]:
+def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[float], learning_rate:float)->list[list[float]]:
     #an array to add a tuple with b0 and b1 value for each epoch, it is initialized with the initial b0 and b1 values
     bUpdate=[[beta[0], beta[1]]]
     #Epoch counter initlialized to 0
