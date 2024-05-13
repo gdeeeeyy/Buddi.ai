@@ -13,11 +13,9 @@ This $$\pi_{estimate}$$ is the estimated value of $$\pi$$, which can change for 
 The output for this code is:
 
 For Uniform distribution(The darts are thrown at random co-ordinates chosen from the uniform distribution):
-
-![Alt text]("/home/krishna/Pictures/Screenshots/Screenshot from 2024-05-13 12-45-23.png")
-![Alt text]("/home/krishna/Pictures/Screenshots/Screenshot from 2024-05-13 12-45-14.png")
+![Screenshot from 2024-05-13 12-45-23](https://github.com/gdeeeeyy/Buddi.ai/assets/73658032/192571c5-bfa8-4d7f-a95e-cb2c2609e16f)
+![Screenshot from 2024-05-13 12-45-14](https://github.com/gdeeeeyy/Buddi.ai/assets/73658032/8e726ba4-51ed-4139-9edb-801c47674679)
 
 For Uniform distribution(The darts are thrown at random co-ordinates chosen from the normal distribution with mean 0 and standard deviation 3):
-
-![Alt text]("/home/krishna/Pictures/Screenshots/Screenshot from 2024-05-13 12-48-26.png")
-![Alt text]("/home/krishna/Pictures/Screenshots/Screenshot from 2024-05-13 12-48-20.png")
+![Screenshot from 2024-05-13 12-48-26](https://github.com/gdeeeeyy/Buddi.ai/assets/73658032/2faf376d-ae74-4e94-a288-b063016d42ec)
+![Screenshot from 2024-05-13 12-48-20](https://github.com/gdeeeeyy/Buddi.ai/assets/73658032/515efe21-8238-4919-a5bd-060f7d60e6e9)
