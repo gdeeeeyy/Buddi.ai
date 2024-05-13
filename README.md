@@ -8,14 +8,7 @@ This is a grid search code for getting the optimal b1 and b2 value with the leas
 
 ## Markov Chain simulation to estimate value of pi
 
-This is a Monte Carlo simulation that is used to estimate the value of pi by throwing darts onto an unit square which contains an unit circle, so the probability of the darts falling onto the circle will be pi/4 and the value of pi will be 4 times the probability of darts falling into the unit circle. This graph shows the estimated pi value for total number of darts thrown onto the unit square.
-
-P(darts falling into unit circle)= number of darts inside the unit circle/Total number of darts=area(unit circle)/area(square)=pi\*((a**2)/2)/a**2=pi/4
-
-Therefore, pi=P(darts falling into the unit circle)*4
-pi_cap=(number of darts inside the unit circle/Total number of darts)*4
-
-This pi_cap is the estimated value of pi, which can change for different values of the total number of darts.
+This is a Monte Carlo simulation that is used to estimate the value of pi by throwing darts onto an unit square which contains an unit circle, so the probability of the darts falling onto the circle will be pi/4 and the value of pi will be 4 times the probability of darts falling into the unit circle. The graph shows the estimated pi value for total number of darts thrown onto the unit square.
 
 **To add: Smoothen the curve(This one was done using google sheets) and Multiprocessing**
 
