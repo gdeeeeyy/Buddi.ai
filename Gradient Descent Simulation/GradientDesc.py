@@ -10,7 +10,7 @@ def linearPolyModel(beta:list[float]):
     #returns the value of the function _impl
     return _impl
 
-def meanSquaredError(y:int, y_pred:int)->int:
+def meanSquaredError(y:float, y_pred:float)->float:
     #Here we calculate the mean square error with the formula sum((y-y_pred)**2)/size(y)
     return np.mean((y-y_pred)**2)
 
@@ -61,7 +61,7 @@ def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[floa
     return np.array(bUpdate), epochs, eps
 
 #this function is used to generate the population set
-def populationGenerator(x:int)->int:
+def populationGenerator(x:float)->float:
     #A random value is generated from a normal distribution with mean=0 and standard deviation=5
     r=np.random.normal(0,5)
     #Generating the output value using the population generating equation => y=2x-3+N(0,5)
@@ -71,7 +71,7 @@ def populationGenerator(x:int)->int:
 #make sure the error is mse
 #1000 pts for x, 80-20 train-test x->(-5,5)
 
-def coeff(X:list[float], Y:list[float], n:int)->int:
+def coeff(X:list[float], Y:list[float], n:int)->list[float]:
     Xtrans=[]#This array will contain the values of the X^t array
     for i in range(n+1):
         #This loop appends the value of X^i into the X^t array where i=[0,n]
