@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 x=np.array([-3,-2,-1,0,1,2,3])
 y=np.array([7,2,0,0,0,2,7])
-b=np.arange(-1, 1, 0.001)
+b=np.arange(-1, 1, 0.01)
 e_fin=[]
 e_tot=[]
 tab=[]
