@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 #Initializing a curried function linearPolyModel with a beta array as a parameter
 def linearPolyModel(beta:list[float]):
@@ -15,15 +16,18 @@ def meanSquaredError(y:float, y_pred:float)->float:
     return np.mean((y-y_pred)**2)
 
 
-def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[float], learning_rate:float)->list[list[float]]:
+def gradDescent(X:list[float], Y:list[float], X_test:list[float], Y_test:list[float], Y_pred:list[float], beta:list[float], learning_rate:float)->list[list[float]]:
     #an array to add a tuple with b0 and b1 value for each epoch, it is initialized with the initial b0 and b1 values
     bUpdate=[[beta[0], beta[1]]]
     #Epoch counter initlialized to 0
     epochs=0
     #The Yvals array is initialised with the first predicted value of Y with random b0 and b1 generated, that is closer to 0
     Yvals=[Y_pred]
+    Yvals_test=[Y_test]
     #the eps list is initalized, this will contain all the mse values for all the epochs
-    eps=[]
+    eps_train=[]
+    eps_train_act=[]
+    eps_test=[]
     #The flag is set to 1
     flag=1
     #This loop executes until the flag value becomes false
@@ -33,7 +37,7 @@ def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[floa
         #partial derivative of error func wrt b0 is computed(db/db0=(2y-y_pred)(-1))
         dedb0=np.mean(-2*(Y - Yvals[-1])) 
         #partial derivative of error func wrt b1 is computed(db/db0=(2y-y_pred)(-x))
-        dedb1=np.mean(-2*((Y - Yvals[-1])* X))
+        dedb1=np.mean(2*((Y - Yvals[-1])* (-X)))
         #The value of b0 is updated for each epoch, each value of b0 and b1
         #b0 old= b0 new+ learning_rate*(de/db0)
         b0-=(learning_rate*dedb0)
@@ -43,6 +47,7 @@ def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[floa
         betArr=[b0, b1] 
         #The curried function is called with the beta array
         Y_pred_new=linearPolyModel(betArr)
+        Y_pred_test=linearPolyModel(betArr)
         #The curryied function is used to generate the value of Yprednew for each value of X 
         Yprednew=Y_pred_new(X)
         #The updated b0 and b1 value is appened into bUpdate as an array -> [b0, b1]
@@ -52,13 +57,17 @@ def gradDescent(X:list[float], Y:list[float], Y_pred:list[float], beta:list[floa
         #The mean squared error for the previos Y value and the present Y value is calculated
         epsi=meanSquaredError(Yprednew, Yvals[-1])
         #The mse is then appended to the eps list
-        eps.append(epsi)
+        eps_train.append(epsi)
+        eps_train_act.append(meanSquaredError(Y, Yprednew))
+        epstesti=meanSquaredError(Y_test, Y_pred_test(X_test))
+        Yvals_test.append(Y_pred_test(X_test))
+        eps_test.append(epstesti)
         #The flag becomes false(0)(the loop will stop) if the mean square error of the present Y and the previous Y is less than 10^-6
         flag=0 if epsi<=10**-6 else 1
         #The Yvals array contains the array of all Y values for each iteration of the loop 
         Yvals.append(Yprednew)
     #The bUpdate array, epoch count and the epsilon array with the mse for all the epochs is returned
-    return np.array(bUpdate), epochs, eps
+    return np.array(bUpdate), epochs, eps_train_act, eps_test
 
 #this function is used to generate the population set
 def populationGenerator(x:float)->float:
@@ -71,7 +80,7 @@ def populationGenerator(x:float)->float:
 #make sure the error is mse
 #1000 pts for x, 80-20 train-test x->(-5,5)
 
-def coeff(X:list[float], Y:list[float], n:int)->list[float]:
+def coeff(X:list[float], Y:list[float], n:int)->list[list[float]]:
     Xtrans=[]#This array will contain the values of the X^t array
     for i in range(n+1):
         #This loop appends the value of X^i into the X^t array where i=[0,n]
@@ -89,27 +98,6 @@ def coeff(X:list[float], Y:list[float], n:int)->list[float]:
     #We compute beta=(X^t * X)^-1 * X^t * Y
     beta=np.matmul(Xinv, XtY)
     return beta
-
-def betaEpochPlot(betaGrad:list[float], betaClosed:list[float], eps:list[float], epochs:int): 
-    b0Grad, b1Grad=map(list, zip(*betaGrad))#splitting the nested array with [b0, b1] values of the betas obtained from the gradient descent algorithm
-    b0Close, b1Close=betaClosed[0], betaClosed[1]#mapping the beta values obtained from closed form solution to separate variables
-    fig=plt.figure(figsize=(7,7))
-    ax=fig.add_subplot(111, projection='3d')
-    ax.set_title("Beta values vs Epoch graph for gradient descent algorithm")
-    # plt.plot(list(range(epochs+1)), b0Grad, c="r", label="β0 values from gradient descent")#Plotting the b0 values against the epochs
-    # plt.plot(list(range(epochs+1)), b1Grad, c="b", label="β1 values from gradient descent")#Plotting the b1 values against the epochs
-    # plt.axhline(y=b0Close, linestyle="--", c="r", label="β0 value from closed form solution")
-    # plt.axhline(y=b1Close, linestyle="--", c="b", label="β1 value from closed form solution")
-    #The tri surface plot between b0, b1 and epsilon
-    ax.plot_trisurf(b0Grad, b1Grad, eps, cmap="viridis", label="change of β0 and β1 values with respect to the epsilon")
-    plt.figtext(0.5, 0.01, "This figure represents the change in β0 and β1 values in gradient descent with respect to each epoch as a tri surface plot", wrap=True, ha="center", fontsize=12)
-    ax.set_xlabel("β0 values from gradient descent")
-    ax.set_ylabel("β1 values from gradient descent")
-    ax.set_zlabel("ε")
-    ax.legend()
-    plt.show()
-    plt.close()
-    return
 
 #a main function is defined
 def main():
@@ -129,8 +117,24 @@ def main():
     X=np.array([XYtup[i][0] for i in range(len(X_init))])
     Y=np.array([XYtup[i][1] for i in range(len(X_init))])
 
+        #The index for the first 80-20 split is computed
+    split_idx=int(X.shape[0]*0.8)
+
+    #A random sample is extracted off the XYtup, which is a list of tuples of the size of split_idx
+    train_data = random.sample(XYtup, split_idx)
+    #The data which is not in train_data but is in XYtup is utilized as the test data
+    test_data = [i for i in XYtup if i not in train_data]
+    #The X_test and Y_test value is extracted from the list of tuples test_data
+    X_test, Y_test = zip(*test_data)
+    #The X_test and Y_test value is extracted from the list of tuples test_data
+    X_train, Y_train = zip(*train_data) 
     #The learning rate is initialized
     learning_rate=0.001
+
+    X_train=np.array(X_train)
+    Y_train=np.array(Y_train)
+    X_test=np.array(X_test)
+    Y_test=np.array(Y_test)
 
     #A random number from the normal distribution with mean 0 and std 1 is selected and initialized as b0 and b1
     b0=np.random.normal(0,1)
@@ -140,37 +144,45 @@ def main():
     #The curried function is called with the randomly initialized values of beta 
     Y_pred=linearPolyModel(beta)
     #Here the predicted value for the input X is returned as Ypred
-    Ypred=Y_pred(X)
+    Ypred=Y_pred(X_train)
     #We call the gradient descent function with the predicted value as Y_pred, 0.001 learning rate, the epochs for the gradient descent is also returned
-    betaUpdate, epochs, eps=gradDescent(X, Y, Ypred, beta, learning_rate)
+    betaUpdate, epochs, eps_train_act, eps_test=gradDescent(X_train, Y_train, X_test, Y_test, Ypred, beta, learning_rate)
     #Printing the epochs
     print(f"The total number of epochs that took to converge to the optimal β0 and β1 values in gradient descent is : {epochs}")
     #the optimal beta values are printed
-    print(f"The β0 and β1 values calculated using the Gradient descent algorithm are : {betaUpdate[-1][0]}, {betaUpdate[-1][1]}")
+    print(f"The β0 and β1 values calculated for training data using the Gradient descent algorithm are : {betaUpdate[-1][0]}, {betaUpdate[-1][1]}")
     #The curried function is called with the beta values calculated through gradient descent
     Y_graddesc=linearPolyModel(betaUpdate[-1])
     #The output values for X with the betas from gradient descent is calculated
-    Ygrad=Y_graddesc(X)
+    Ygrad=Y_graddesc(X_train)
     #The actual beta values are stored in the betaActual array
-    betaActual=coeff(X, Y, 1)
+    betaActual=coeff(X_train, Y_train, 1)
     #The curried function is called with the beta values calculated using closed form solution(matrix method)
     Y_act=linearPolyModel(betaActual)
     #The output values for X with betas from the closed form solution is calculated
-    Yact=Y_act(X)
+    Yact=Y_act(X_train)
+
+    # plt.scatter(X_train, Y_train, c="r", label="Training data points", marker='.')
+    # plt.scatter(X_test, Y_test, c="b", label="Testing data points", marker='.')
+    # plt.plot(X_train, Yact, c="k", label="Model passing through training points")
+    # plt.legend()
+    # plt.show()
     #The mean squared error between the outputs generated by the gradient descent algorithm and the closed form solution is computed and printed
     eps_mse=meanSquaredError(Ygrad, Yact)
-    eps.append(eps_mse)
-    print(f"The ∈ value(Mean Square Error) after the obtaining β0 and β1 values from gradient descent is : {eps_mse}")
+    eps_train_act.append(eps_mse)
+    print(f"The ∈ value(Mean Square Error) after the obtaining β0 and β1 values from gradient descent is for training : {eps_train_act[-2]}")
+    print(f"The ∈ value(Mean Square Error) after the obtaining β0 and β1 values from gradient descent is for testing : {eps_test[-1]}")
     #The function to plot the beta values vs epoch is called
-    betaEpochPlot(betaUpdate, betaActual, eps, epochs)
-    eps.pop(    )
-    #A plot for epoch vs mse is plotted
+    eps_train_act.pop()
+    print(eps_train_act[-1]<eps_test[-1])
+    #A plot for epoch vs mse for both training and testing datas is plotted
     plt.title("The Epoch vs Mean Square Error plot for gradient descent")
-    plt.plot(list(range(100, epochs)), eps[100:], label="MSE change with respect to epochs")
-    plt.xlabel("Epochs")
-    plt.ylabel("Mean square error")
+    plt.plot(list(range(100, epochs)), eps_train_act[100:], c="r", label="MSE change with respect to epochs for training data(Bias)")
+    plt.plot(list(range(100, epochs)), eps_test[100:], c="b", label="MSE change with respect to epochs for testing data(Variance)")
+    plt.xlabel("Epoch")
+    plt.ylabel("Mean square error for training data")
     plt.figtext(0.5, 0.01, "This plot shows that the Mean square error for the model decreases as the epochs increases for the gradient descent algorithm", wrap=True, horizontalalignment='center', fontsize=12) # plot description
-    plt.legend()
+    plt.legend(loc="upper left")
     plt.show()
 
 if __name__=="__main__":
