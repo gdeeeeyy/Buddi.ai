@@ -43,6 +43,29 @@ def plotNormal(X:list[float], Y:list[float]):
     ySeries=(normSlop*xSeries)+c
     return xSeries, ySeries
 
+def meanCountError(Y:list[int], Y_pred:list[int])->int:
+    c=0
+    for i in range(len(Y)):
+        if(Y[i]!=Y_pred[i]):
+            c+=1
+    return c
+
+def threshVsError(X:list[float], Y:list[int], beta:list[float]):
+    thresholds=np.arange(X.min(), X.max(), 0.5)
+    β0,β1=beta[0], beta[1]
+    eps=[]
+    for i in range(len(thresholds)):
+        Y_pred=[I(δ(β0+β1*X[j], thresholds[i])) for j in range(len(X))]
+        eps.append(meanCountError(Y, Y_pred))
+    plt.title("Threshold vs Mean Count Error plot")
+    plt.plot(thresholds, eps, label="Relationship between threshold and mean count error")
+    plt.xlabel("Threshold")
+    plt.ylabel("Mean Count Error")
+    plt.figtext(0.5, 0.01, "This plot shows the relationships between threshold and the mean count error for each threshold", wrap=True, horizontalalignment='center', fontsize=12)
+    plt.legend()
+    plt.show()
+    plt.close()
+
 def main():
     #The array with all data points are given
     X=np.array([1,2,3,4,5,-3,-4,-5,-6])
@@ -64,6 +87,7 @@ def main():
     X_label2=np.array([X[idx] for idx in range(len(Y)) if Y[idx]=="G"])
     #The xSeries and ySeries value is returned for the decision boundary
     xSeries, y_Series=plotNormal(X, Y_pred)
+    threshVsError(X, Y_bool, [β0, β1])
     print(f"The values after applying a regressor on the labels and given points are : {list(Y_pred)}")
     print(f"The values after finding the labels using the Discriminator function for the regressor values are : {Y_fin}")
     plt.title("Classfication using a linear regression")
