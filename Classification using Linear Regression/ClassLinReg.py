@@ -6,7 +6,8 @@ def I(x:chr)->int:
     return 0 if x=='G' else 1
 
 def coeff(X:list[int], Y:list[int])->list[list[float]]:
-    Xtrans=[X**0, X]#This array will contain the values of the X^t array
+    #This array will contain the values of the X^t array
+    Xtrans=[X**0, X]
     #The shape of Xtrans is (2, 1), so we do a transpose operation to change its shape to (1,2)
     Xtrans=np.array(Xtrans)
     Xnew=np.transpose(Xtrans)
@@ -87,6 +88,7 @@ def main():
     X_label2=np.array([X[idx] for idx in range(len(Y)) if Y[idx]=="G"])
     #The xSeries and ySeries value is returned for the decision boundary
     xSeries, y_Series=plotNormal(X, Y_pred)
+    #This function plots the classification threshold vs the error graph
     threshVsError(X, Y_bool, [β0, β1])
     print(f"The values after applying a regressor on the labels and given points are : {list(Y_pred)}")
     print(f"The values after finding the labels using the Discriminator function for the regressor values are : {Y_fin}")
