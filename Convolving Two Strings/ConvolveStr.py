@@ -35,6 +35,17 @@ def convolve(str1: str, str2:str)->list[float]:
         cRev.append(cj)
     return cSub+cRev[::-1]
 
-print(convolve("He is a bad boy", "I watched bad boy 2"))
+def main():
+    #calling the convolve function for the strings "he is a bad boy" and "I watched bad boy 2"
+    cOut=convolve("He is a bad boy", "I watched bad boy 2")
+    print(cOut)
+    plt.title("Convolving two strings")
+    plt.plot(range(len(cOut)), cOut, label="Convolving two strings together")
+    plt.figtext(0.5, 0.01, "The giving two strings are convolved and sub string matching is performed on each stride of the convolution", wrap=True, horizontalalignment='center', fontsize=8)
+    plt.legend()
+    plt.show()
+
+if __name__=="__main__":
+    main()
 
 #still have to do comparison for entire string comparison
