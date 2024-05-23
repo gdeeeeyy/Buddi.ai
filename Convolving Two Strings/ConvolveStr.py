@@ -38,7 +38,7 @@ def convolve(str1: str, str2:str)->list[float]:
 def main():
     #calling the convolve function for the strings "he is a bad boy" and "I watched bad boy 2"
     cOut=convolve("He is a bad boy", "I watched bad boy 2")
-    print(cOut)
+    print(f"The output for each step of convulution is: {cOut}")
     plt.title("Convolving two strings")
     plt.plot(range(len(cOut)), cOut, label="Convolving two strings together")
     plt.figtext(0.5, 0.01, "The giving two strings are convolved and sub string matching is performed on each stride of the convolution", wrap=True, horizontalalignment='center', fontsize=8)
