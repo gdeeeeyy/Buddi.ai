@@ -1,18 +1,31 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+from PIL import Image
+import scipy.signal as sp
 
-img=mpimg.imread("Convolving Two Images/img.JPG")
-sp1=img.shape
-print(img)
-plt.imshow(img)
-#plt.show()
+img=Image.open("Convolving Two Images/img.JPG")
+imgBw=img.convert("1")
+plt.imshow(imgBw)
+plt.show()
 
-ker=mpimg.imread("Convolving Two Images/kernel.png")
-plt.imshow(ker)
-#plt.show()
+arrayImg=np.array(imgBw, dtype=np.float64)
+print(arrayImg.shape)
 
-#np.convolve
+kerImg=Image.open("Convolving Two Images/kernel.png")
+kerBw=kerImg.convert("1")
+plt.imshow(kerBw)
+plt.show()
+
+arrayKer=np.array(kerBw, dtype=np.float64)
+print(arrayKer.shape)
+
+res=sp.convolve2d(arrayImg, arrayKer, mode='same', boundary='fill', fillvalue=0)
+print(res.shape)
+
+plt.imshow(res)
+plt.show()
+
+
 
 #convolution is mostly integration
 #y[i,j]=[sum(m=- to +inf) sum(n=- to +inf){h[m,n].x[i-m, j-n]}]
