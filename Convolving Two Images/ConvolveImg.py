@@ -16,7 +16,8 @@ arrayImg=np.array(imgBw, dtype=np.float64)
 print(arrayImg.shape)
 
 #opening the kernel image
-kerImg=Image.open("Convolving Two Images/ker2.png")
+#tried to use the shirt as the kernel
+kerImg=Image.open("Convolving Two Images/ker4.png")
 #converting the kernel to b&w
 kerBw=kerImg.convert("1")
 #plotting the kernel
