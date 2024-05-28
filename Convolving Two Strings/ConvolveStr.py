@@ -61,5 +61,3 @@ def main():
 
 if __name__=="__main__":
     main()
-
-#still have to do comparison for entire string comparison
